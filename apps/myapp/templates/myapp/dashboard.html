@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- 	{% load static %} -->
+	<link rel="stylesheet" href="{% static 'myapp/css/dashboard.css' %}">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<title>Dashboard</title>
+</head>
+<body>
+	<div class="container">
+			<fieldset>
+				<legend><h1>Hi {{request.session.name}}!</h1></legend>
+				<a href ="/logout"><button>Log Out</button></a> <a href ="/shoes"><button>Go To All Products</button></a>
+				<h3>Sell Product</h3>
+					<form class="" action="/sell" method="POST">
+						{% csrf_token %}
+						<div class="form-group">
+							<label for="productName">Item Name</label>
+							<input type="text" class="form-control" name="name">
+						<div class="form-group">
+							<label for="productPrice">Price</label>
+							<input type="text" class="form-control" name="price" placeholder="$0.00">
+						</div>
+					  <button type="submit" class="btn btn-primary">Sell</button>
+					</form>
+			</fieldset>
+            <!-- <p>{{inventory}}</p>
+            <p>{{sales}}</p>
+            <p>{{purchases}}</p> -->
+
+			<br><br><br><br>
+			<h4>My Inventory</h4>
+			<table class="table table-bordered">
+				<tr>
+					<th>Product</th>
+					<th>Date Posted</th>
+					<th>Amount</th>
+					<th>Action</th>
+				</tr>
+				<!-- inventory comes from product table -->
+                {% for product in inventory %}
+				<tr>
+					<td>{{product.name}}</td>
+					<td>{{product.created_at}}</td>
+					<td>{{product.price}}</td>
+					<td><a href ="/remove/{{product.id}}"><button>Remove Item</button></a></td>
+				</tr>
+                {% endfor %}
+			</table>
+				<p> Total: {{inventory_total}} </p>
+			<br><br><br><br>
+			<h4>My Sales</h4>
+			<table class="table table-bordered">
+				<tr>
+					<th>Product</th>
+					<th>Date Sold</th>
+					<th>Buyer</th>
+					<th>Amount</th>
+				</tr>
+				<!-- sales comes from sale table -->
+                {% for sale in sales %}
+				<tr>
+					<td>{{sale.product.name}}</td>
+					<td>{{sale.date_sold}}</td>
+					<td>{{sale.buyer.fname}}</td>
+					<td>{{sale.product.price}}</td>
+				</tr>
+                {% endfor %}
+
+			</table>
+				<p> Total: {{sales_total}} </p>
+			<br><br><br><br>
+			<h4>My Purchases</h4>
+			<table class="table table-bordered">
+				<tr>
+					<th>Product</th>
+					<th>Date Bought</th>
+					<th>Seller</th>
+					<th>Amount</th>
+				</tr>
+				<!-- purchases comes from Sales table -->
+                {% for purchase in purchases %}
+				<tr>
+					<td>{{purchase.product.name}}</td>
+					<td>{{purchase.date_sold}}</td>
+					<td>{{purchase.product.seller.fname}}</td>
+					<td>{{purchase.product.price}}</td>
+				</tr>
+                {% endfor %}
+			</table>
+				<p> Total: {{purchase_total}} </p>
+	</div>
+
+</body>
+</html>
