@@ -63,33 +63,36 @@ def remove(req, product_id):
     return redirect('/dashboard/{}'.format(req.session['id']))
 
 
-
 def dashboard(req, user_id=None):
-
-    inventory = Product.objects.filter(seller_id = req.session['id'], isSold=False)
+    my_sales = []
     inventory_total = 0
+    sales_total = 0
+    purchase_total = 0
+
+    # === INVENTORY ===
+    inventory = Product.objects.filter(seller_id = req.session['id'], isSold=False)
 
     for product in inventory:
         inventory_total += product.price
 
+
+    # === SALES ===
     all_sales = Sales.objects.all()
-    my_sales = []
 
     for sale in all_sales:
         if sale.product.seller_id == req.session['id']:
             my_sales.append(sale)
 
-    sales_total = 0
-
     for sale in my_sales:
         sales_total += sale.product.price
 
-    purchases = Sales.objects.filter(buyer_id = req.session['id'])
 
-    purchase_total = 0
+    # === PURCHASES ===
+    purchases = Sales.objects.filter(buyer_id = req.session['id'])
 
     for purchase in purchases:
         purchase_total += purchase.product.price
+
 
     context = {
         'inventory' : inventory,
